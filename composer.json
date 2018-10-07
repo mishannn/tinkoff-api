@@ -5,6 +5,8 @@
     "Tinkoff",
     "API"
   ],
+  "version": "1.0.1",
+  "minimum-stability": "stable",
   "require": {
     "php": ">=5.5.0",
     "guzzlehttp/guzzle": "~6.0"

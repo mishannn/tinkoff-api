@@ -1,0 +1,7 @@
+# Composer
+/vendor/
+/composer.phar
+/composer.lock
+
+# PHPStorm dir
+/.idea/

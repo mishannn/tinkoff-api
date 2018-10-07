@@ -5,7 +5,6 @@
     "Tinkoff",
     "API"
   ],
-  "stability":"stable",
   "type": "package",
   "minimum-stability": "stable",
   "require": {

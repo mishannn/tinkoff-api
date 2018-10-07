@@ -5,7 +5,9 @@
     "Tinkoff",
     "API"
   ],
+  "stability":"stable",
   "version": "1.0.1",
+  "type": "package",
   "minimum-stability": "stable",
   "require": {
     "php": ">=5.5.0",

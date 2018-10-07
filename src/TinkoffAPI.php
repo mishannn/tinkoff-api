@@ -1,6 +1,6 @@
 <?php
 
-namespace Tinkoff;
+namespace mishannn\Tinkoff;
 
 use Exception;
 use GuzzleHttp\Client;
@@ -300,6 +300,10 @@ class TinkoffAPI {
             throw new InsufficientPrivilegesException('Недостаточно прав!');
         }
 
+		if ($data->resultCode === 'INVALID_PASSWORD') {
+            throw new InvalidPasswordException('Неверный пароль!');
+        }
+		
         if ($data->resultCode !== 'OK') {
             throw new Exception('Неизвестный результат: "' . $data->resultCode . '"');
         }
@@ -379,7 +383,17 @@ class InvalidRequestDataException extends Exception {
  * @package Tinkoff
  */
 class InsufficientPrivilegesException extends Exception {
-    // Exception if Tinkoff API returned bad request data
+    // Exception if Tinkoff API returned insufficient privileges
+}
+
+/**
+ * Исключение, выбрасываемое при неверном пароле
+ *
+ * Class InvalidPasswordException
+ * @package Tinkoff
+ */
+class InvalidPasswordException extends Exception {
+    // Exception if Tinkoff API returned invalid password
 }
 
 /**

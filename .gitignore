@@ -5,3 +5,6 @@
 
 # PHPStorm dir
 /.idea/
+
+# PHP server
+/php-server.bat

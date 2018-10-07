@@ -1,5 +1,15 @@
-## Tinkoff API example
+# Unofficial Tinkoff API
 
+## Требования
+- PHP >= 5.5.0
+- GuzzleHttp
+
+## Установка
+```
+composer require mishannn/tinkoff-api
+```
+
+## Пример использования
 ```php
 require_once __DIR__ . '/vendor/autoload.php';
 

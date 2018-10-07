@@ -1,6 +1,6 @@
 <?php
 
-namespace Tinkoff;
+namespace mishannn\Tinkoff;
 
 use Exception;
 use GuzzleHttp\Client;

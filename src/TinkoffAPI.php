@@ -1,6 +1,6 @@
 <?php
 
-namespace mishannn\Tinkoff;
+namespace Tinkoff;
 
 use Exception;
 use GuzzleHttp\Client;
@@ -21,7 +21,9 @@ class TinkoffAPI {
      * Создание объекта
      *
      * @param array $params
-     * @throws InvalidRequestDataException|WaitingConfirmationException
+     * @throws InsufficientPrivilegesException
+     * @throws InvalidRequestDataException
+     * @throws WaitingConfirmationException
      */
     public function __construct($params = []) {
         $this->_client = new Client([
@@ -47,7 +49,9 @@ class TinkoffAPI {
      * @param $username
      * @param $password
      * @return object
-     * @throws InvalidRequestDataException|WaitingConfirmationException
+     * @throws InsufficientPrivilegesException
+     * @throws InvalidRequestDataException
+     * @throws WaitingConfirmationException
      */
     public function signUp($username, $password) {
         $query = [
@@ -86,7 +90,9 @@ class TinkoffAPI {
      * @param $ticket
      * @param $code
      * @return object
-     * @throws InvalidRequestDataException|WaitingConfirmationException
+     * @throws InsufficientPrivilegesException
+     * @throws InvalidRequestDataException
+     * @throws WaitingConfirmationException
      */
     public function confirmBySms($method, $ticket, $code) {
         $query = [
@@ -108,7 +114,9 @@ class TinkoffAPI {
      * Получение прав (после входа)
      *
      * @return object
-     * @throws InvalidRequestDataException|WaitingConfirmationException
+     * @throws InsufficientPrivilegesException
+     * @throws InvalidRequestDataException
+     * @throws WaitingConfirmationException
      */
     public function levelUp() {
         $query = [
@@ -124,7 +132,9 @@ class TinkoffAPI {
      * Получение состояния сессии
      *
      * @return mixed
-     * @throws InvalidRequestDataException|WaitingConfirmationException
+     * @throws InsufficientPrivilegesException
+     * @throws InvalidRequestDataException
+     * @throws WaitingConfirmationException
      */
     public function getSessionStatus() {
         $query = [
@@ -139,7 +149,9 @@ class TinkoffAPI {
      * Кэширование данных на сервере (???)
      *
      * @param $fields
-     * @throws InvalidRequestDataException|WaitingConfirmationException
+     * @throws InsufficientPrivilegesException
+     * @throws InvalidRequestDataException
+     * @throws WaitingConfirmationException
      */
     public function warmUpCache($fields) {
         $query = [
@@ -154,8 +166,10 @@ class TinkoffAPI {
     /**
      * Получение информации о пользователе
      *
-     * @throws InvalidRequestDataException|WaitingConfirmationException
      * @return object
+     * @throws InsufficientPrivilegesException
+     * @throws InvalidRequestDataException
+     * @throws WaitingConfirmationException
      */
     public function getPersonalInfo() {
         $query = [
@@ -173,8 +187,10 @@ class TinkoffAPI {
     /**
      * Получение информации о счетах и их балансах
      *
-     * @throws InvalidRequestDataException|WaitingConfirmationException
      * @return object
+     * @throws InsufficientPrivilegesException
+     * @throws InvalidRequestDataException
+     * @throws WaitingConfirmationException
      */
     public function getAccountsFlat() {
         $query = [
@@ -193,7 +209,9 @@ class TinkoffAPI {
      * Получение ИД веб-пользователя
      *
      * @return string
-     * @throws InvalidRequestDataException|WaitingConfirmationException
+     * @throws InsufficientPrivilegesException
+     * @throws InvalidRequestDataException
+     * @throws WaitingConfirmationException
      */
     public function getWebUserId() {
         $query = [];
@@ -236,7 +254,9 @@ class TinkoffAPI {
      * Отправка активности
      *
      * @return object
-     * @throws InvalidRequestDataException|WaitingConfirmationException
+     * @throws InsufficientPrivilegesException
+     * @throws InvalidRequestDataException
+     * @throws WaitingConfirmationException
      */
     public function ping() {
         $query = [
@@ -255,7 +275,9 @@ class TinkoffAPI {
      * @param array $query
      * @param array $params
      * @return bool|string|object
-     * @throws InvalidRequestDataException|WaitingConfirmationException
+     * @throws InsufficientPrivilegesException
+     * @throws InvalidRequestDataException
+     * @throws WaitingConfirmationException
      */
     public function requestMethod($method, $query = [], $params = []) {
         $methodUri = "/v1/{$method}";
@@ -272,6 +294,14 @@ class TinkoffAPI {
 
         if ($data->resultCode === 'WAITING_CONFIRMATION') {
             throw new WaitingConfirmationException($data, $this->_sessionId, $this->_webUserId);
+        }
+
+        if ($data->resultCode === 'INSUFFICIENT_PRIVILEGES') {
+            throw new InsufficientPrivilegesException('Недостаточно прав!');
+        }
+
+        if ($data->resultCode !== 'OK') {
+            throw new Exception('Неизвестный результат: "' . $data->resultCode . '"');
         }
 
         if (isset($data->payload)) {
@@ -339,6 +369,16 @@ class TinkoffAPI {
  * @package Tinkoff
  */
 class InvalidRequestDataException extends Exception {
+    // Exception if Tinkoff API returned bad request data
+}
+
+/**
+ * Исключение, выбрасываемое при недостаточных правах
+ *
+ * Class InsufficientPrivilegesException
+ * @package Tinkoff
+ */
+class InsufficientPrivilegesException extends Exception {
     // Exception if Tinkoff API returned bad request data
 }
 
